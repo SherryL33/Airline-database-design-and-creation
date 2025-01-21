@@ -107,7 +107,7 @@ Aircraft are systematically monitored based on their maintenance schedules, ensu
 ### Creation of the Database
 
 ### Creation of the Database Entities Attributes and Values
-###### See raw sql codes used [here](project Xinyun Li.txt)
+###### See raw sql codes used [here](project_XinyunLi.txt)
 
 #### Passenger Table
 
