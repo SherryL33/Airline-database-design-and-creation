@@ -35,7 +35,7 @@ The requirement-gathering process was conducted with SkyHigh Airways staff to de
 At the end of each day, airline staff must submit a report detailing all completed flights, including flight numbers, departure and arrival times, assigned aircraft, and the names and IDs of assigned crew members.
 
 ##### Monthly Passenger Reservation Report:
-A comprehensive report is generated at the end of each month, summarizing all passenger reservations, including reservation IDs, booking statuses, and the number of flights per reservation.
+At the end of each month, a comprehensive report is generated summarizing all passenger reservations, including reservation IDs, booking statuses, and the number of flights per reservation.
 
 ##### Yearly Frequent Flyer Summary:
 An annual report is compiled at the end of the year, providing an overview of frequent flyer members, including their account IDs, status levels, and total miles accumulated or redeemed.
@@ -105,4 +105,67 @@ Aircraft are systematically monitored based on their maintenance schedules, ensu
 
 
 ### Creation of the Database
+
+### Creation of the Database Entities Attributes and Values
+###### See raw sql codes used [here](LibraryDatabaseProjectSql_Codes.txt)
+
+#### Passenger Table
+
+
+
+### Coding SQL Statement to Generate reports
+###### At the end of each day, airline staff must submit a report detailing all completed flights, including flight numbers, departure and arrival times, assigned aircraft, and the names and IDs of assigned crew members.
+```SQL Statements
+SELECT 
+    Flight.FlightNumber, 
+    Flight.DepartureTime, 
+    Flight.ArrivalTime, 
+    Aircraft.Model AS AircraftModel, 
+    Aircraft.AircraftID, 
+    Crewmembers.FirstName AS CrewFirstName, 
+    Crewmembers.LastName AS CrewLastName, 
+    Crewmembers.EmployeeID
+FROM Flight
+JOIN Aircraft ON Flight.AircraftID = Aircraft.AircraftID
+JOIN CrewAssignment ON Flight.FlightID = CrewAssignment.FlightID
+JOIN Crewmembers ON CrewAssignment.EmployeeID = Crewmembers.EmployeeID
+WHERE Flight.DepartureTime < CURRENT_DATE;
+```
+
+##### At the end of each month, a comprehensive report is generated summarizing all passenger reservations, including reservation IDs, booking statuses, and the number of flights per reservation.
+```SQL Statements
+SELECT 
+    Reservation.ReservationID, 
+    Reservation.Status, 
+    COUNT(ReservationinFlight.FlightID) AS NumberOfFlights
+FROM Reservation
+LEFT JOIN ReservationinFlight ON Reservation.ReservationID = ReservationinFlight.ReservationID
+WHERE MONTH(Reservation.BookingDate) = MONTH(CURRENT_DATE)
+  AND YEAR(Reservation.BookingDate) = YEAR(CURRENT_DATE)
+GROUP BY Reservation.ReservationID, Reservation.Status;
+```
+
+##### An annual report is compiled at the end of the year, providing an overview of frequent flyer members, including their account IDs, status levels, and total miles accumulated or redeemed.
+```SQL Statements
+SELECT 
+    FrequentFlyerAccount.AccountID, 
+    FrequentFlyerAccount.StatusLevel, 
+    FrequentFlyerAccount.AccumulatedMiles
+FROM FrequentFlyerAccount
+WHERE YEAR(CURRENT_DATE) = YEAR(NOW());
+```
+
+##### Aircraft are systematically monitored based on their maintenance schedules, ensuring that each aircraft undergoes inspections and servicing at the designated intervals.
+```SQL Statements
+SELECT 
+    Aircraft.AircraftID, 
+    Aircraft.Model, 
+    Aircraft.Capacity, 
+    Aircraft.MaintenanceSchedule
+FROM Aircraft
+WHERE Aircraft.MaintenanceSchedule <= CURRENT_DATE
+ORDER BY Aircraft.MaintenanceSchedule ASC;
+```
+
+
 
