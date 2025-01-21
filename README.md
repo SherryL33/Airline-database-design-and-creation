@@ -1,4 +1,5 @@
 # Airline-database-design-and-creation
+![](aircraft.jpg)
 ## Table of Content
 - [Project Overview](#Project-Overview)
 - [Tools Used](#Tools-Used)
