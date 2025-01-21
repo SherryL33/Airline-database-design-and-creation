@@ -1,0 +1,192 @@
+-- Create Passenger Table
+CREATE TABLE PASSENGER (
+    PassengerID INT NOT NULL,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    DateOfBirth DATE NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    CONSTRAINT PassengerPK PRIMARY KEY (PassengerID),
+    CONSTRAINT Email_Unique UNIQUE (Email)
+);
+
+-- Create Reservation Table
+CREATE TABLE RESERVATION (
+    ReservationID INT NOT NULL,
+    BookingDate DATE NOT NULL,
+    Status VARCHAR(50) NOT NULL,
+    PassengerID INT NOT NULL,
+    CONSTRAINT ReservationPK PRIMARY KEY (ReservationID),
+    CONSTRAINT ReservationFK1 FOREIGN KEY (PassengerID) REFERENCES PASSENGER (PassengerID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT Status_Domain CHECK (Status IN ('Confirmed', 'Pending', 'Canceled'))
+);
+
+-- Create Flight Table
+CREATE TABLE FLIGHT (
+    FlightID INT NOT NULL,
+    FlightNumber VARCHAR(50) NOT NULL,
+    DepartureTime DATETIME NOT NULL,
+    ArrivalTime DATETIME NOT NULL,
+    Route VARCHAR(255) NOT NULL,
+    CONSTRAINT FlightPK PRIMARY KEY (FlightID)
+);
+
+-- Create Aircraft Table
+CREATE TABLE AIRCRAFT (
+    AircraftID INT NOT NULL,
+    Model VARCHAR(100) NOT NULL,
+    Capacity INT NOT NULL,
+    MaintenanceSchedule DATE NOT NULL,
+    CONSTRAINT AircraftPK PRIMARY KEY (AircraftID)
+);
+
+-- Create CrewMember Table
+CREATE TABLE CREWMEMBER (
+    EmployeeID INT NOT NULL,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Position VARCHAR(50) NOT NULL,
+    CONSTRAINT CrewMemberPK PRIMARY KEY (EmployeeID)
+);
+
+-- Create Ticket Table
+CREATE TABLE TICKET (
+    TicketID INT NOT NULL,
+    FlightClass VARCHAR(50) NOT NULL,
+    Fare DECIMAL(10, 2) NOT NULL,
+    ReservationID INT NOT NULL,
+    PassengerID INT NOT NULL,
+    CONSTRAINT TicketPK PRIMARY KEY (TicketID),
+    CONSTRAINT TicketFK1 FOREIGN KEY (ReservationID) REFERENCES RESERVATION (ReservationID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT TicketFK2 FOREIGN KEY (PassengerID) REFERENCES PASSENGER (PassengerID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT FlightClass_Domain CHECK (FlightClass IN ('Economy', 'Business', 'First'))
+);
+
+-- Create FrequentFlyerAccount Table
+CREATE TABLE FREQUENTFLYERACCOUNT (
+    AccountID INT NOT NULL,
+    StatusLevel VARCHAR(50) NOT NULL,
+    AccumulatedMiles INT NOT NULL,
+    PassengerID INT NOT NULL,
+    CONSTRAINT FrequentFlyerAccountPK PRIMARY KEY (AccountID),
+    CONSTRAINT FrequentFlyerAccountFK FOREIGN KEY (PassengerID) REFERENCES PASSENGER (PassengerID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT StatusLevel_Domain CHECK (StatusLevel IN ('Silver', 'Gold', 'Platinum'))
+);
+
+-- Create CrewAssignment Table (Intersection Table)
+CREATE TABLE CREWASSIGNMENT (
+    AssignmentID INT NOT NULL,
+    FlightID INT NOT NULL,
+    EmployeeID INT NOT NULL,
+    CONSTRAINT CrewAssignmentPK PRIMARY KEY (AssignmentID),
+    CONSTRAINT CrewAssignmentFK1 FOREIGN KEY (FlightID) REFERENCES FLIGHT (FlightID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT CrewAssignmentFK2 FOREIGN KEY (EmployeeID) REFERENCES CREWMEMBER (EmployeeID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+-- Create ReservationFlight Table (Intersection Table)
+CREATE TABLE RESERVATIONFLIGHT (
+    ReservationFlightID INT NOT NULL,
+    ReservationID INT NOT NULL,
+    FlightID INT NOT NULL,
+    CONSTRAINT ReservationFlightPK PRIMARY KEY (ReservationFlightID),
+    CONSTRAINT ReservationFlightFK1 FOREIGN KEY (ReservationID) REFERENCES RESERVATION (ReservationID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT ReservationFlightFK2 FOREIGN KEY (FlightID) REFERENCES FLIGHT (FlightID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+-- Insert records into Passenger Table
+INSERT INTO Passenger (PassengerID,FirstName, LastName, DateOfBirth, Email)
+VALUES 
+('1','Sherry', 'Li', '2000-06-15', 'sherrryli@bgsu.edu'),
+('2','Jane', 'An', '1999-03-10', 'janean@bgsu.edu'),
+('3','Sam', 'Johnson', '1980-09-25', 'sam.johnson@utoledo.edu'),
+('4','Michael', 'Brook', '1991-1-05', 'michael.brook@gmail.com'),
+('5','Jaime', 'Curtis', '1995-02-12', 'jcurtis244@gmail.com');
+
+-- Insert sample data into Reservation Table
+INSERT INTO RESERVATION (ReservationID, BookingDate, Status, PassengerID)
+VALUES
+(101, '2024-12-01', 'Confirmed', '2'),
+(102, '2024-12-02', 'Pending','1'),
+(103, '2024-12-03', 'Canceled', '3'),
+(104, '2024-12-04', 'Confirmed', '5'),
+(105, '2024-12-05', 'Pending', '4');
+
+-- Insert sample data into Flight Table
+INSERT INTO FLIGHT (FlightID, FlightNumber, DepartureTime, ArrivalTime, Route)
+VALUES
+(201, 'SH100', '2024-12-01 10:00:00', '2024-12-01 14:00:00', 'Detroit - Los Angeles'),
+(202, 'SH101', '2024-12-02 09:30:00', '2024-12-02 15:30:00', 'Los Angeles - San Francisco'),
+(203, 'SH102', '2024-12-03 08:00:00', '2024-12-03 11:00:00', 'San Francisco - Las Vegas'),
+(204, 'SH103', '2024-12-04 11:00:00', '2024-12-04 15:00:00', 'Chicago - Cleveland'),
+(205, 'SH104', '2024-12-05 12:30:00', '2024-12-05 17:30:00', 'New York - Boston');
+
+-- Insert sample data into Aircraft Table
+INSERT INTO AIRCRAFT (AircraftID, Model, Capacity, MaintenanceSchedule)
+VALUES
+(301, 'Boeing 737', 180, '2024-12-20'),
+(302, 'Airbus A320', 160, '2024-12-15'),
+(303, 'Boeing 777', 350, '2024-12-25'),
+(304, 'Airbus A380', 500, '2024-12-10'),
+(305, 'Boeing 787', 220, '2024-12-30');
+
+-- Insert sample data into CrewMember Table
+INSERT INTO CREWMEMBER (EmployeeID, FirstName, LastName, Position)
+VALUES
+(401, 'Alice', 'Green', 'Pilot'),
+(402, 'Bob', 'Li', 'Co-Pilot'),
+(403, 'Charlie', 'Duck', 'Flight Attendant'),
+(404, 'Diana', 'Erin', 'Flight Attendant'),
+(405, 'Eva', 'Frank', 'Cabin Crew');
+
+-- Insert sample data into Ticket Table
+INSERT INTO TICKET (TicketID, FlightClass, Fare, ReservationID, PassengerID)
+VALUES
+(501, 'Economy', '300.00', '101', '1'),
+(502, 'Business', '600.00', '102', '2'),
+(503, 'First', '1000.00', '103', '3'),
+(504, 'Economy', '320.00', '104', '4'),
+(505, 'Business', '650.00', '105', '5');
+
+-- Insert sample data into FrequentFlyerAccount Table
+INSERT INTO FREQUENTFLYERACCOUNT (AccountID, StatusLevel, AccumulatedMiles, PassengerID)
+VALUES
+(601, 'Gold', '15000', '2'),
+(602, 'Silver', '8000', '1'),
+(603, 'Platinum', '25000', '4'),
+(604, 'Gold', '12000', '5'),
+(605, 'Silver', '7000', '3');
+
+-- Insert sample data into CrewAssignment Table
+INSERT INTO CREWASSIGNMENT (AssignmentID, FlightID, EmployeeID)
+VALUES
+('701', '201', '401'),
+('702', '202', '402'),
+('703', '203', '403'),
+('704', '204', '404'),
+('705', '205', '405');
+
+aircraft-- Insert sample data into ReservationFlight Table
+INSERT INTO RESERVATIONFLIGHT (ReservationFlightID, ReservationID, FlightID)
+VALUES
+('801', '101', '201'),
+('802', '102', '202'),
+('803', '103', '203'),
+('804', '104', '204'),
+('805', '105', '205');
+
