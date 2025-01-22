@@ -111,7 +111,15 @@ Aircraft are systematically monitored based on their maintenance schedules, ensu
 ###### See raw sql codes used [here](project_XinyunLi.txt)
 
 #### Passenger Table
+![](passenger.PNG)
 
+#### Frequent flyer account Table
+#### Ticket Table
+#### Reservation Table
+#### Flight Table
+#### CrewAssignment Table
+#### Crewmember Table
+#### Aircraft Table
 
 
 ### Coding SQL Statement to Generate reports
