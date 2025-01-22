@@ -106,20 +106,28 @@ Aircraft are systematically monitored based on their maintenance schedules, ensu
 
 
 ### Creation of the Database
-
+![](1.png)
+![](2.png)
 ### Creation of the Database Entities Attributes and Values
 ###### See raw sql codes used [here](project_XinyunLi.txt)
-
+![](createtable.png)
+![](insertrecord.png)
 #### Passenger Table
-![](passenger.PNG)
-
+![](passenger.png)
 #### Frequent flyer account Table
+![](frequentflyeraccount.png)
 #### Ticket Table
+![](ticket.png)
 #### Reservation Table
+![](reservation.png)
 #### Flight Table
+[See](flight.png) Flight Table result
 #### CrewAssignment Table
+[See](crewassignment.png) CrewAssignment Table result
 #### Crewmember Table
+[See](crewmember.png) Crewmember Table result
 #### Aircraft Table
+[See](aircraft.png) Aircraft Table result
 
 
 ### Coding SQL Statement to Generate reports
